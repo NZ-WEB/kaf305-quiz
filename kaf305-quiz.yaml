@@ -54,7 +54,7 @@ paths:
     post:
       operationId: Регистрация пользователя
       description: ''
-      parameters: [ ]
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -71,6 +71,56 @@ paths:
           $ref: '#/components/responses/ValidationError'
       tags:
         - Пользователи
+#  /api/events/:
+#    get:
+#      operationId: Получение списка событий
+#      description: 'Получение списка всех тестов/обытий/квизов'
+#      parameters:
+#        - name: id
+#        required: true
+#        in: query
+#        description: ID преподавателя (создателя).
+#        schema:
+#          type: integer
+#      security:
+#        - Token: [ ]
+#      responses:
+#        '200':
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/EventsList'
+#          description: 'Список мероприятий текущего пользователя'
+#        '400':
+#          $ref: '#/components/responses/ValidationError'
+#      tags:
+#        - События
+  /api/events/:
+    get:
+      operationId: Получение списка событий
+      description: 'Получение списка всех тестов/обытий/квизов'
+      parameters:
+        - name: id
+          required: true
+          in: query
+          description: ID преподавателя (создателя).
+          schema:
+            type: integer
+      security:
+        - Token: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventsList'
+          description: 'Список мероприятий текущего пользователя'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/schemas/AuthenticationError'
+      tags:
+        - События
   /api/users/{id}/:
     get:
       operationId: Профиль пользователя
@@ -371,6 +421,20 @@ components:
           type: string
           description: 'Статус мероприятия (В процессе / Остановлено / В ожидании начала)'
           default: 'pending'
+    EventShort:
+      type: object
+      description: 'Краткое описание события без контента'
+      properties:
+        slug:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+    EventsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/EventShort'
     EventCurrentStage:
       type: object
       default: 'Конкретная стадия мероприятия'
@@ -380,6 +444,17 @@ components:
         question:
           type: object
           $ref: '#/components/schemas/QuizQuestionItem'
+    EventGetAllResponse:
+      type: object
+      description: 'Ответ на запрос всех событий преподавателя'
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventsList'
+        count:
+          type: int
+          description: 'Колличество мероприятий'
 
     AnswerOption:
       type: object
