@@ -300,6 +300,43 @@ components:
         - last_name
         - email
 
+    Student:
+      description: 'Учащийтя (проходящий тестирование)'
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string;
+          example: 'Иван'
+        secondName:
+          type: string
+          example: 'Иванов'
+        rating:
+          type: integer
+          default: 0
+        groupNumber:
+          type: string
+          example: 'М3О-304С-19'
+      required:
+        - id
+        - firstName
+        - secondName
+        - rating
+    StudentCreate:
+      type: object
+      description: 'Входные данные студента при входе в систему тестирования (квиз)'
+      properties:
+        firstName:
+          type: string
+        secondName:
+          type: string
+        groupNumber:
+          type: string
+      required:
+        - firstName
+        - secondName
+
     Event:
       type: object
       description: 'Один тест (квиз / мероприятие)'
@@ -320,6 +357,29 @@ components:
         author:
           type: object
           $ref: '#/components/schemas/User'
+        students:
+          type: array
+          items:
+            $ref: '#/components/schemas/Student'
+        link:
+          type: string
+          description: 'уникальная ссылка события'
+        stage:
+          type: integer
+          description: 'Номер стадии (порядковый номер активного вопроса)'
+        status:
+          type: string
+          description: 'Статус мероприятия (В процессе / Остановлено / В ожидании начала)'
+          default: 'pending'
+    EventCurrentStage:
+      type: object
+      default: 'Конкретная стадия мероприятия'
+      properties:
+        currentStage:
+          type: number
+        question:
+          type: object
+          $ref: '#/components/schemas/QuizQuestionItem'
 
     AnswerOption:
       type: object
@@ -346,9 +406,14 @@ components:
         answersLength:
           type: integer
           description: 'Колличество вариантов ответа'
+        timer:
+          description: 'Время на один вопрос в секундах'
+          type: number
+          default: 30
       required:
         - question
         - answerOptions
+        - timer
 
     ValidationError:
       description: Стандартные ошибки валидации DRF
