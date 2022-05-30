@@ -71,56 +71,6 @@ paths:
           $ref: '#/components/responses/ValidationError'
       tags:
         - Пользователи
-#  /api/events/:
-#    get:
-#      operationId: Получение списка событий
-#      description: 'Получение списка всех тестов/обытий/квизов'
-#      parameters:
-#        - name: id
-#        required: true
-#        in: query
-#        description: ID преподавателя (создателя).
-#        schema:
-#          type: integer
-#      security:
-#        - Token: [ ]
-#      responses:
-#        '200':
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/EventsList'
-#          description: 'Список мероприятий текущего пользователя'
-#        '400':
-#          $ref: '#/components/responses/ValidationError'
-#      tags:
-#        - События
-  /api/events/:
-    get:
-      operationId: Получение списка событий
-      description: 'Получение списка всех тестов/обытий/квизов'
-      parameters:
-        - name: id
-          required: true
-          in: query
-          description: ID преподавателя (создателя).
-          schema:
-            type: integer
-      security:
-        - Token: [ ]
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EventsList'
-          description: 'Список мероприятий текущего пользователя'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/schemas/AuthenticationError'
-      tags:
-        - События
   /api/users/{id}/:
     get:
       operationId: Профиль пользователя
@@ -184,6 +134,78 @@ paths:
           $ref: '#/components/responses/AuthenticationError'
       tags:
         - Пользователи
+  /api/events/:
+    get:
+      operationId: Получение списка событий
+      description: 'Получение списка всех тестов/обытий/квизов'
+      parameters:
+        - name: id
+          required: true
+          in: query
+          description: 'ID преподавателя (создателя).'
+          schema:
+            type: integer
+      security:
+        - Token: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventsList'
+          description: 'Список мероприятий текущего пользователя'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/schemas/AuthenticationError'
+      tags:
+        - События
+  /api/event/:
+    get:
+      operationId: Получить событие
+      description: 'Получение конкретного события'
+      parameters:
+        - name: slug
+          required: true
+          in: query
+          description: 'slug события'
+          schema:
+            type: string
+      security:
+        - Token: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: 'Выбранное мероприятие'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/schemas/AuthenticationError'
+      tags:
+        - Событие
+    post:
+      operationId: Добавление события
+      description: 'Добавление нового события'
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreateRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventCreatedResponse'
+          description: 'Пользователь успешно создан'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+      tags:
+        - Событие
   /api/auth/token/login/:
     post:
       operationId: Получить токен авторизации
@@ -455,6 +477,49 @@ components:
         count:
           type: int
           description: 'Колличество мероприятий'
+    EventCreateRequest:
+      type: object
+      description: 'Один тест (квиз / мероприятие)'
+      properties:
+        title:
+          type: string
+          description: 'Заголовок'
+        description:
+          type: string
+          description: 'Описание события'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizQuestionItem'
+        author:
+          type: object
+          $ref: '#/components/schemas/User'
+    EventCreatedResponse:
+      type: object
+      properties:
+        slug:
+          description: 'Уникальная строка события'
+          type: string
+        title:
+          type: string
+          description: 'Заголовок'
+        description:
+          type: string
+          description: 'Описание события'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizQuestionItem'
+        author:
+          type: object
+          $ref: '#/components/schemas/User'
+        link:
+          type: string
+          description: 'уникальная ссылка события'
+        status:
+          type: string
+          description: 'Статус мероприятия (В процессе / Остановлено / В ожидании начала)'
+          default: 'pending'
 
     AnswerOption:
       type: object
