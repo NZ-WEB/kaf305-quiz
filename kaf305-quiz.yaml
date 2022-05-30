@@ -71,32 +71,32 @@ paths:
           $ref: '#/components/responses/ValidationError'
       tags:
         - Пользователи
-  /api/users/{id}/:
-    get:
-      operationId: Профиль пользователя
-      description: 'Доступно всем пользователям.'
-      security:
-        - Token: [ ]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: "Уникальный id этого пользователя"
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '401':
-          $ref: '#/components/responses/AuthenticationError'
-      tags:
-        - Пользователи
+#  /api/users/{id}/:
+#    get:
+#      operationId: Профиль пользователя
+#      description: 'Доступно всем пользователям.'
+#      security:
+#        - Token: [ ]
+#      parameters:
+#        - name: id
+#          in: path
+#          required: true
+#          description: "Уникальный id этого пользователя"
+#          schema:
+#            type: string
+#      responses:
+#        '200':
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/User'
+#          description: ''
+#        '404':
+#          $ref: '#/components/responses/NotFound'
+#        '401':
+#          $ref: '#/components/responses/AuthenticationError'
+#      tags:
+#        - Пользователи
   /api/users/me/:
     get:
       operationId: Текущий пользователь
